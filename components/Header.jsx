@@ -6,8 +6,8 @@ const Header = () => {
       <View style={styles.logo}>
         <Image source={logo} style={styles.image}></Image>
         <View style={styles.text}>
-          <Text style={styles.text1}>Med</Text>
-          <Text style={styles.text2}>Scope</Text>
+          <Text style={styles.text1}>Book</Text>
+          <Text style={styles.text2}>Stax</Text>
         </View>
       </View>
     </View>

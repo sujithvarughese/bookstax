@@ -10,8 +10,8 @@ const HomeScreen = () => {
           <Text style={styles.welcomeText}>Welcome!</Text>
         </View>
         <View style={styles.logo}>
-          <Text style={styles.med}>Med</Text>
-          <Text style={styles.scope}>Scope</Text>
+          <Text style={styles.med}>Book</Text>
+          <Text style={styles.scope}>Stax</Text>
           <Image style={styles.image} source={logo} alt="logo"/>
         </View>
       </View>
