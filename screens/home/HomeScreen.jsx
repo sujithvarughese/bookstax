@@ -5,6 +5,7 @@ import { colors } from '../../utils/styles'
 const HomeScreen = () => {
   return (
     <ScrollView style={styles.container}>
+      <Text>Home</Text>
       <View style={styles.header}>
         <View>
           <Text style={styles.welcomeText}>Welcome!</Text>

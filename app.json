@@ -15,6 +15,7 @@
       "**/*"
     ],
     "ios": {
+      "buildNumber": "1.0.0",
       "supportsTablet": true,
       "bundleIdentifier": "com.sujithv.reading"
     },
@@ -26,6 +27,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e6f5eb90-403b-40ce-a031-e46ab73ba6ed"
+      }
     }
   }
 }

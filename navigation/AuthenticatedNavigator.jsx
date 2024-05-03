@@ -11,6 +11,7 @@ import IconButton from '../components/ui/IconButton'
 import { colors } from '../utils/styles'
 import LibraryStack from './LibraryStack'
 import DiscoverStack from './DiscoverStack'
+import SearchScreen from '../screens/SearchScreen'
 
 
 
@@ -52,6 +53,19 @@ const AuthenticatedNavigator = () => {
         component={DiscoverStack}
         options={{
           tabBarLabel: "Discover",
+          tabBarIcon: () => <FontAwesome5 name="home" size={24} color="black" />,
+          headerRight: ({ tintColor }) => <IconButton icon="exit" color={tintColor} size={24} onPress={logoutUser}/>,
+          headerTitle: "",
+          headerStyle: {
+            backgroundColor: colors.color
+          }
+        }}
+      />
+      <Tab.Screen
+        name="Search Stack"
+        component={SearchScreen}
+        options={{
+          tabBarLabel: "Search",
           tabBarIcon: () => <FontAwesome5 name="home" size={24} color="black" />,
           headerRight: ({ tintColor }) => <IconButton icon="exit" color={tintColor} size={24} onPress={logoutUser}/>,
           headerTitle: "",

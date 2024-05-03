@@ -1,9 +1,9 @@
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { useEffect, useState } from 'react'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
-import Button from './ui/Button'
-import LoadingOverlay from './ui/LoadingOverlay'
-import { colors } from '../utils/styles'
+import Button from './Button'
+import LoadingOverlay from './LoadingOverlay'
+import { colors } from '../../utils/styles'
 import { TextField } from 'react-native-ui-lib'
 
 const ListSearch = ({ list, placeholder, buttonText, onChange, onClick, onSubmit }) => {
@@ -11,62 +11,16 @@ const ListSearch = ({ list, placeholder, buttonText, onChange, onClick, onSubmit
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [queryMatches, setQueryMatches] = useState([])
-  const [selectedItems, setSelectedItems] = useState([])
   const [listShown, setListShown] = useState(false)
 
-  const handleChangeText = async () => {
-    try {
-      const results = await onChange(searchQuery)
-      setQueryMatches(results)
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
   useEffect(() => {
-    if (searchQuery.length === 0) {
-      setListShown(false)
-      setQueryMatches(list)
-      console.log("1")
-      return
-    }
-    setListShown(true)
-    if (onChange) {
-      handleChangeText()
-      console.log("2")
-    }
     if (list) {
-      setTimeout(() => {
-        if (searchQuery.length > 2) {
-          const filteredMatches = list.filter(match => {
-            return match.toLowerCase().includes(searchQuery.toLowerCase())
-          })
-          setQueryMatches(filteredMatches)
-        }
-        console.log("3")
-      }, 100)
+      const filteredMatches = list.filter(match => {
+        return match.toLowerCase().includes(searchQuery.toLowerCase())
+      })
+      setQueryMatches(filteredMatches)
     }
   }, [searchQuery])
-
-  const toggleListItem = (item) => {
-    setSearchQuery("")
-    setListShown(false)
-    if (onClick) {
-      onClick(item)
-      return
-    }
-    if (selectedItems.length >= 5 && !selectedItems.includes(item)) {
-      console.log("5 meds max")
-      return
-    }
-    if (!selectedItems.includes(item)) {
-      const updatedSelectedItems = [...selectedItems, item]
-      setSelectedItems(updatedSelectedItems)
-    } else {
-      const updatedSelectedItems = selectedItems.filter(selected => selected !== item)
-      setSelectedItems(updatedSelectedItems)
-    }
-  }
 
   if (isLoading) {
     return <LoadingOverlay />
@@ -99,34 +53,21 @@ const ListSearch = ({ list, placeholder, buttonText, onChange, onClick, onSubmit
         renderItem={({ item }) =>
           <Pressable
             style={styles.listItem}
-            onPress={() => toggleListItem(item)}
+            onPress={() => onSubmit(item)}
           >
             <Text style={styles.listItemText} numberOfLines={1}>{item}</Text>
-            {selectedItems?.includes(item) &&
-              <Ionicons name="checkmark" size={20} color="red" />}
+
           </Pressable>
         }
       />
       }
-      {!listShown && selectedItems.length > 0 &&
-      <View style={styles.selectedListContainer}>
-        <View style={styles.selectedList}>
-          {selectedItems.map(item =>
-            <View style={styles.selectedItem}>
-              <Text style={styles.selectedItemText} numberOfLines={1}>{item}</Text>
-              <Pressable onPress={() => toggleListItem(item)}>
-                <Ionicons name="remove-circle-sharp" size={20} color="red" />
-              </Pressable>
-            </View>)}
+
+      {buttonText &&
+        <View>
+          <Button onPress={() => onSubmit(searchQuery)}><Text>{buttonText}</Text></Button>
         </View>
-        {
-          buttonText &&
-          <View>
-            <Button onPress={() => onSubmit(selectedItems)}><Text>{buttonText}</Text></Button>
-          </View>
-        }
-      </View>
       }
+
 
     </View>
 
