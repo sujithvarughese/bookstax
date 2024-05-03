@@ -1,14 +1,45 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native'
+import { useEffect, useState } from 'react'
+import { AuthProvider, useAuthContext } from './context/auth-context'
+import AuthenticatedNavigator from './navigation/AuthenticatedNavigator'
+import PublicNavigator from './navigation/PublicNavigator'
 
-export default function App() {
+const Navigation = () => {
+
+  const { isAuthenticated, authenticateUser } = useAuthContext()
+  const [isAuthenticatingUser, setIsAuthenticatingUser] = useState(true)
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem("token")
+      if (storedToken) {
+        authenticateUser(storedToken)
+      }
+      setIsAuthenticatingUser(false)
+    }
+    fetchToken()
+  }, [])
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <NavigationContainer style={{ flex: 1 }}>
+      {isAuthenticated ? <AuthenticatedNavigator /> : <PublicNavigator />}
       <StatusBar style="auto" />
-    </View>
+    </NavigationContainer>
   );
 }
+
+const App = () => {
+
+  return (
+    <AuthProvider>
+      <Navigation />
+    </AuthProvider>
+
+  );
+}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -18,3 +49,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App
