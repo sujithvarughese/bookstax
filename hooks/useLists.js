@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import connect from './utils/connect'
+import connect from '../utils/connect'
+import axios from 'axios'
 
-const useLists = ({ preload , uri }) => {
+const useLists = ({ method , url }) => {
 
-  const [values, setValues] = useState({})
+  const [data, setData] = useState({})
   const [lists, setLists] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
@@ -12,15 +13,15 @@ const useLists = ({ preload , uri }) => {
   const [pageNumber, setPageNumber] = useState(1)
 
 
-  const getLists = async (query) => {
+  const getLists = async () => {
     // reset any previous set values
     setIsLoading(true)
     setIsError(false)
-    console.log(query)
-    console.log(uri)
     setError({})
+
     try {
-      const response = await connect(uri, { params: { query }} )
+      const response = await connect(url, { method: method, params: data })
+
       const { lists } = response.data
       setLists(lists)
     } catch (error) {
@@ -29,12 +30,10 @@ const useLists = ({ preload , uri }) => {
   }
 
   useEffect(() => {
-    if (preload === true) {
-      getLists()
-    }
-  }, [])
+    getLists()
+  }, [data])
 
-  return { getLists, lists }
+  return { setData, lists }
 }
 
 export default useLists

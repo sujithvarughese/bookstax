@@ -5,12 +5,12 @@ import LoadingOverlay from '../components/ui/LoadingOverlay'
 import { useEffect, useState } from 'react'
 import ListSearch from '../components/ui/ListSearch'
 import connect from '../utils/connect'
-import useLists from '../useLists'
+import useLists from '../hooks/useLists'
 import BookTile from '../components/ui/BookTile'
 
 const SearchScreen = () => {
 
-  const { getLists, lists } = useLists({ preload: false, uri: "discover/search"})
+  const { setData, lists } = useLists({ url: "discover/search"})
 
   const [searchResults, setSearchResults] = useState([])
 
@@ -22,7 +22,7 @@ const SearchScreen = () => {
     <ScrollView>
       <Text>Search</Text>
       <ListSearch
-        onSubmit={getLists}
+        onSubmit={setData}
         placeholder="Search genre"
         buttonText="Search"
       />

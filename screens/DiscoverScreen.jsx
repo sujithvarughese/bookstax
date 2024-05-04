@@ -2,13 +2,13 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import connect from '../utils/connect'
 import { useEffect, useState } from 'react'
 import ScrollingList from '../components/ui/ScrollingList'
-import useLists from '../useLists'
+import useLists from '../hooks/useLists'
 
 const DiscoverScreen = () => {
 
 
 
-  const { getLists, lists } = useLists({ preload: true, uri: "discover/bestsellers" })
+  const { lists } = useLists({ url: "discover/bestsellers", method: "get" })
 
 
   return (

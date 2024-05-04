@@ -44,8 +44,8 @@ const AuthContent = ({ isLogin, onAuthenticate }) => {
     try {
       setIsAuthenticating(true)
       const response = await connect.post("auth/guest")
-      const { token } = response.data
-      authenticateUser(token)
+      const { token, email, userId } = response.data
+      authenticateUser(token, email, userId)
     } catch (error) {
       Alert.alert("Authentication failed")
     } finally {
