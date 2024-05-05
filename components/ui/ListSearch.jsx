@@ -64,7 +64,7 @@ const ListSearch = ({ list, placeholder, buttonText, onChange, onClick, onSubmit
 
       {buttonText &&
         <View>
-          <Button onPress={() => onSubmit({ query: searchQuery })}><Text>{buttonText}</Text></Button>
+          <Button onPress={(query) => onSubmit(query)}><Text>{buttonText}</Text></Button>
         </View>
       }
     </View>

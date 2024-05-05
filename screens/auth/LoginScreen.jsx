@@ -15,8 +15,8 @@ const LoginScreen = () => {
     try {
       setIsAuthenticating(true)
       const response = await connect.post("auth", { email, password, mode: "signInWithPassword" })
-      const { token } = response.data
-      authenticateUser(token)
+      const { token, email, userId } = response.data
+      authenticateUser(token, email, userId)
     } catch (error) {
       Alert.alert("Authentication failed")
     } finally {

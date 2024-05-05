@@ -21,7 +21,6 @@ const useLists = ({ method , url }) => {
 
     try {
       const response = await connect(url, { method: method, params: data })
-
       const { lists } = response.data
       setLists(lists)
     } catch (error) {

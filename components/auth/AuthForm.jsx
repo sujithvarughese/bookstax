@@ -77,7 +77,8 @@ const AuthForm = ({ isLogin, credentialsInvalid, onSubmit, loginAsGuest }) => {
               onPress={handlePw}
             >
               <Text style={styles.forgotPasswordText}> <Text>Forgot Password?</Text></Text>
-            </Pressable>}
+            </Pressable>
+          }
 
 
           <View style={styles.buttonGroup}>

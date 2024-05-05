@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { AuthProvider, useAuthContext } from './context/auth-context'
 import AuthenticatedNavigator from './navigation/AuthenticatedNavigator'
 import PublicNavigator from './navigation/PublicNavigator'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Navigation = () => {
 
@@ -15,7 +16,7 @@ const Navigation = () => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem("token")
       if (storedToken) {
-        authenticateUser(storedToken)
+        authenticateUser(storedToken, userId)
       }
       setIsAuthenticatingUser(false)
     }

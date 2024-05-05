@@ -14,23 +14,24 @@ const AuthProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState()
   const [user, setUser] = useState(null)
 
-  const authenticateUser = (token, email, userId) => {
+  const authenticateUser = (token, userId) => {
     setAuthToken(token)
-    setUser({ email, userId })
+    setUser(userId)
     AsyncStorage.setItem("token", token)
+    AsyncStorage.setItem("userId", userId)
   }
 
   const logoutUser = () => {
     setAuthToken(null)
     setUser(null)
     AsyncStorage.removeItem("token")
+    AsyncStorage.removeItem("userId")
   }
 
   return <AuthContext.Provider value={
     {
       token: authToken,
-      email: user?.email || null,
-      userId: user?.userId || null,
+      userId: user || null,
       isAuthenticated: !!authToken,
       authenticateUser,
       logoutUser,

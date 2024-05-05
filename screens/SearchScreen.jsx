@@ -7,29 +7,30 @@ import ListSearch from '../components/ui/ListSearch'
 import connect from '../utils/connect'
 import useLists from '../hooks/useLists'
 import BookTile from '../components/ui/BookTile'
+import useBooks from '../hooks/useBooks'
+import SearchBar from '../components/SearchBar'
+import { useAuthContext } from '../context/auth-context'
 
 const SearchScreen = () => {
 
-  const { setData, lists } = useLists({ url: "discover/search"})
+  const { setData, books } = useBooks({ url: "discover/search"})
 
   const [searchResults, setSearchResults] = useState([])
 
   useEffect(() => {
-    setSearchResults(lists["searchResults"])
-  }, [lists])
+    setSearchResults(books)
+  }, [books])
 
   return (
     <ScrollView>
       <Text>Search</Text>
-      <ListSearch
-        onSubmit={setData}
-        placeholder="Search genre"
-        buttonText="Search"
-      />
 
-      {searchResults?.map(item => {
+      <SearchBar onSubmit={setData} placeholder="Search" buttonText="Search"/>
+
+
+      {searchResults.length > 0 && searchResults.map(item => {
         return (
-          <BookTile title={item.title} author={item.author} coverImage={`https://covers.openlibrary.org/b/id/${item.coverID}-M.jpg`} />
+          <BookTile title={item.title} author={item.author} image={item.image} />
         )
       })}
 

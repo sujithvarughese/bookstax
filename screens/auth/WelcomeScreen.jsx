@@ -16,8 +16,8 @@ const WelcomeScreen = () => {
     try {
       setIsAuthenticating(true)
       const response = await connect.post("auth/guest")
-      const { token } = response.data
-      authenticateUser(token)
+      const { token, userId } = response.data
+      authenticateUser(token, userId)
     } catch (error) {
       Alert.alert("Authentication failed")
     } finally {
@@ -36,11 +36,11 @@ const WelcomeScreen = () => {
           <View style={styles.textGroup}>
             <Text style={styles.welcome}>Welcome</Text>
             <View style={styles.logo}>
-              <Text style={styles.med}>Med</Text>
-              <Text style={styles.scope}>Scope</Text>
+              <Text style={styles.med}>Book</Text>
+              <Text style={styles.scope}>Stax</Text>
               <Image style={styles.image} source={logo} alt="logo"/>
             </View>
-            <Text style={styles.caption}>Keeping your health in scope.</Text>
+            <Text style={styles.caption}>Keeping your reading organized.</Text>
           </View>
 
           <View style={styles.buttonGroup}>

@@ -3,9 +3,9 @@ import connect from '../utils/connect'
 import { useEffect, useState } from 'react'
 import ScrollingList from '../components/ui/ScrollingList'
 import useLists from '../hooks/useLists'
+import { useAuthContext } from '../context/auth-context'
 
 const DiscoverScreen = () => {
-
 
 
   const { lists } = useLists({ url: "discover/bestsellers", method: "get" })
