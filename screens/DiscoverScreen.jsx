@@ -16,7 +16,7 @@ const DiscoverScreen = () => {
       <Text>Discover</Text>
       {lists?.map(item => {
         return (
-          <ScrollingList genre={item.label} list={item.books}/>
+          <ScrollingList key={item.label} genre={item.label} list={item.books}/>
         )
       })}
     </ScrollView>

@@ -1,18 +1,18 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import BookTile from './BookTile'
+import BookTile from '../BookTile'
 
 const ScrollingList = ({ genre, list }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Latest {genre} News</Text>
-      {list. length > 0 &&
+      <Text style={styles.text}>{genre}</Text>
+      {list.length > 0 &&
         <FlatList
           style={styles.list}
           horizontal={true}
           initialNumToRender={4}
           keyExtractor={item => item.title}
           data={list}
-          renderItem={({item}) => <BookTile title={item.title} author={item.author} coverImage={item.book_image} />}
+          renderItem={({item}) => <BookTile book={{ ...item }} />}
         />
       }
     </View>
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize"
   },
   list: {
-    height: 235,
+
   }
 })
 export default ScrollingList

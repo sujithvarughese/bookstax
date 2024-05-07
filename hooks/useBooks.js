@@ -20,7 +20,7 @@ const useBooks = ({ method , url }) => {
     setError({})
 
     try {
-      const response = await connect(url)
+      const response = await connect(url, { params: { data } })
       const { books } = response.data
       setBooks(books)
     } catch (error) {

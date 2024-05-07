@@ -6,10 +6,11 @@ import { useEffect, useState } from 'react'
 import ListSearch from '../components/ui/ListSearch'
 import connect from '../utils/connect'
 import useLists from '../hooks/useLists'
-import BookTile from '../components/ui/BookTile'
+import BookTile from '../components/BookTile'
 import useBooks from '../hooks/useBooks'
 import SearchBar from '../components/SearchBar'
 import { useAuthContext } from '../context/auth-context'
+import SearchResults from '../components/SearchResults'
 
 const SearchScreen = () => {
 
@@ -27,12 +28,7 @@ const SearchScreen = () => {
 
       <SearchBar onSubmit={setData} placeholder="Search" buttonText="Search"/>
 
-
-      {searchResults.length > 0 && searchResults.map(item => {
-        return (
-          <BookTile title={item.title} author={item.author} image={item.image} />
-        )
-      })}
+      {searchResults?.length > 0 && <SearchResults searchResults={searchResults}/>}
 
     </ScrollView>
   )

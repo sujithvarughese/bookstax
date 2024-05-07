@@ -2,7 +2,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import useLists from '../hooks/useLists'
 import { useAuthContext } from '../context/auth-context'
 import { useEffect, useState } from 'react'
-import BookTile from '../components/ui/BookTile'
+import BookTile from '../components/BookTile'
 
 const LibraryScreen = () => {
 
@@ -25,7 +25,7 @@ const LibraryScreen = () => {
     <View>
       <Text>Library</Text>
       {library?.length > 0 ?
-        <FlatList data={library} renderItem={({ item  }) => <BookTile />} />
+        <FlatList data={library} renderItem={({ item  }) => <BookTile book={item}/>} />
         :
         <Text>No books in library</Text>
       }
