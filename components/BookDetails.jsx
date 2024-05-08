@@ -7,6 +7,7 @@ import { useAuthContext } from '../context/auth-context'
 import Fontisto from '@expo/vector-icons/Fontisto';
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const icons = {
   "Apple Books": <Fontisto name="apple" size={24} color="black" />,
@@ -17,6 +18,8 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
 
   const [bookDetails, setBookDetails] = useState({})
   const [expandedSummary, setExpandedSummary] = useState(false)
+  const [stars, setStars] = useState([])
+  const [bookState, setBookState] = useState(book)
 
   const { userId } = useAuthContext()
 
@@ -30,6 +33,16 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
     }
   }
 
+  const updateBookDetails = async () => {
+    try {
+      const response = await connect.patch(`library/${book._id}`, book)
+      const { data } = response.data
+      setBookState(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const addBookToLibrary = async () => {
     try {
       const response = await connect.post("library", { ...book, userId })
@@ -37,6 +50,18 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    const arr = []
+    for (let i = 0; i < book?.myRating; i++) {
+      arr.push(<Ionicons name="star" size={24} color="black"/>)
+    }
+    for (let i = book?.myRating; i < 5; i++) {
+      arr.push(<Ionicons name="star-outline" size={24} color="black" />)
+    }
+    setStars(arr)
+  }, [bookState]);
+
 
   useEffect(() => {
     getBookDetails()
@@ -64,7 +89,22 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
           </View>
 
           <View>
-            <Text>{book?.status}</Text>
+            {
+              stars.map((star, index) =>
+                <Icon
+                  key={index}
+                  onPress={()=> {
+                    updateBookDetails({ ...bookState, myRating: index + 1 })
+                  }}
+                >
+                  {star}
+                </Icon>
+              )
+
+            }
+          </View>
+
+          <View>
             <SelectDropdown
               data={[
                 { title: "Unread" },
@@ -79,7 +119,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                       <Icon name={selectedItem.icon}  />
                     )}
                     <Text style={styles.dropdownButtonTxtStyle}>
-                      {(selectedItem && selectedItem.title) || 'Select your mood'}
+                      {(selectedItem && selectedItem.title) || 'Select status'}
                     </Text>
                     <Icon name={isOpened ? 'chevron-up' : 'chevron-down'}  />
                   </View>
@@ -104,6 +144,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
           <View>
             {bookDetails?.genres?.map(genre => <Text>{genre}</Text>)}
           </View>
+
           {
             book.buyLinks ?
               <View>
