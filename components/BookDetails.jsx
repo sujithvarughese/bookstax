@@ -3,15 +3,23 @@ import Button from './ui/Button'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import connect from '../utils/connect'
 import { useEffect, useState } from 'react'
+import { useAuthContext } from '../context/auth-context'
+import Fontisto from '@expo/vector-icons/Fontisto';
 
+const icons = {
+  "Apple Books": <Fontisto name="apple" size={24} color="black" />,
+  "Amazon": <Fontisto name="amazon" size={24} color="black" />
+}
 
 const BookDetails = ({ showModal, setShowModal, book }) => {
 
   const [bookDetails, setBookDetails] = useState({})
 
+  const { userId } = useAuthContext()
+
   const getBookDetails = async () => {
     try {
-      const response = await connect(`library/${book.id}`)
+      const response = await connect(`library/${book.bookId}`)
       const { data } = response.data
       setBookDetails(data)
     } catch (error) {
@@ -19,9 +27,17 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
     }
   }
 
+  const addBookToLibrary = async () => {
+    try {
+      const response = await connect.post("library", { ...book, userId })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     getBookDetails()
-  }, [bookDetails])
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -30,13 +46,30 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
           <Image resizeMode="cover" style={styles.image} source={{ uri: book.image }} />
           <Text>{bookDetails?.title}</Text>
           <Text>{bookDetails?.author}</Text>
-          <Text>{bookDetails?.rating}</Text>
+          <Text>Rating: {bookDetails?.rating}</Text>
           <Text>{bookDetails?.pages} pages</Text>
           <Text>Year released: {bookDetails?.year}</Text>
-          <Text>{bookDetails.summary}</Text>
+          <Text>{bookDetails?.summary}</Text>
           <View>
-            {bookDetails.genres?.map(genre => <Text>{genre}</Text>)}
+            {bookDetails?.genres?.map(genre => <Text>{genre}</Text>)}
           </View>
+          {
+            book.buyLinks ?
+              <View>
+                <TouchableOpacity onPress={() => Linking.openURL(book.buyLinks[0].url)}>
+                  <Fontisto name="amazon" size={24} color="black" />
+                  <Text>{book.buyLinks[0].name}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => Linking.openURL(book.buyLinks[1].url)}>
+                  <Fontisto name="apple" size={24} color="black" />
+                  <Text>{book.buyLinks[1].name}</Text>
+                </TouchableOpacity>
+              </View>
+              :
+              <Button onPress={addBookToLibrary}><Text>Add to Library</Text></Button>
+
+          }
 
           <Button onPress={()=>setShowModal(false)}><Text>Close</Text></Button>
         </ScrollView>

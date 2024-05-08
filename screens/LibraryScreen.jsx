@@ -1,37 +1,63 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
 import useLists from '../hooks/useLists'
 import { useAuthContext } from '../context/auth-context'
 import { useEffect, useState } from 'react'
 import BookTile from '../components/BookTile'
+import useBooks from '../hooks/useBooks'
+import connect from '../utils/connect'
 
 const LibraryScreen = () => {
 
   const { userId } = useAuthContext()
 
-  const { lists, setData } = useLists({ url: "library" })
-
   const [library, setLibrary] = useState([])
 
+  const getLibrary = async () => {
+    try {
+      const response = await connect(`library/user/${userId}`)
+      const { data } = response.data
+      setLibrary(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    setData({ userId })
+    getLibrary()
   }, [])
 
-  useEffect(() => {
-    setLibrary(lists["library"])
-  }, [lists])
+
 
   return (
-    <View>
+    <ScrollView style={styles.container}>
       <Text>Library</Text>
-      {library?.length > 0 ?
-        <FlatList data={library} renderItem={({ item  }) => <BookTile book={item}/>} />
-        :
-        <Text>No books in library</Text>
-      }
-    </View
+      <View style={styles.content}>
+        {library?.length > 0 ?
+          library.map(book => <BookTile key={book.title} book={book}/>)
+          :
+          <Text>No books in library</Text>
+        }
+      </View>
+
+    </ScrollView
     >
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+
+  },
+  content: {
+    paddingTop: 12,
+    paddingHorizontal: 6,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    alignItems: "center",
+
+
+  }
+})
 
 export default LibraryScreen

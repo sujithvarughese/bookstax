@@ -12,7 +12,11 @@ const ScrollingList = ({ genre, list }) => {
           initialNumToRender={4}
           keyExtractor={item => item.title}
           data={list}
-          renderItem={({item}) => <BookTile book={{ ...item }} />}
+          renderItem={({item}) =>
+            <View style={styles.item}>
+              <BookTile book={{ ...item }} />
+            </View>
+            }
         />
       }
     </View>
@@ -28,8 +32,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textTransform: "capitalize"
   },
-  list: {
-
+  item: {
+    marginRight: 6
   }
 })
 export default ScrollingList

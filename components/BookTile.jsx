@@ -6,7 +6,6 @@ const BookTile = ({ book }) => {
 
   const [showModal, setShowModal] = useState(false)
 
-
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.touchable} onPress={() => setShowModal(!showModal)}>
@@ -24,7 +23,7 @@ const BookTile = ({ book }) => {
 }
 const styles = StyleSheet.create({
   container: {
-    marginRight: 12,
+
     backgroundColor: "white",
     elevation: 8,
     shadowColor: "#000",
