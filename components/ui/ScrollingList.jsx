@@ -4,7 +4,7 @@ import BookTile from '../BookTile'
 const ScrollingList = ({ genre, list }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{genre}</Text>
+      <Text style={styles.text}>{!!genre && genre}</Text>
       {list.length > 0 &&
         <FlatList
           style={styles.list}

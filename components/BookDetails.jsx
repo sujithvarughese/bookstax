@@ -5,6 +5,8 @@ import connect from '../utils/connect'
 import { useEffect, useState } from 'react'
 import { useAuthContext } from '../context/auth-context'
 import Fontisto from '@expo/vector-icons/Fontisto';
+import SelectDropdown from 'react-native-select-dropdown'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const icons = {
   "Apple Books": <Fontisto name="apple" size={24} color="black" />,
@@ -14,6 +16,7 @@ const icons = {
 const BookDetails = ({ showModal, setShowModal, book }) => {
 
   const [bookDetails, setBookDetails] = useState({})
+  const [expandedSummary, setExpandedSummary] = useState(false)
 
   const { userId } = useAuthContext()
 
@@ -49,7 +52,55 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
           <Text>Rating: {bookDetails?.rating}</Text>
           <Text>{bookDetails?.pages} pages</Text>
           <Text>Year released: {bookDetails?.year}</Text>
-          <Text>{bookDetails?.summary}</Text>
+          <View>
+            {expandedSummary ?
+              <Text>{bookDetails?.summary}</Text>
+              :
+              <Text numberOfLines={6} >{bookDetails?.summary}</Text>
+            }
+            <TouchableOpacity onPress={() => setExpandedSummary(!expandedSummary)}>
+              <Text>{expandedSummary ? "Less" : "More"}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View>
+            <Text>{book?.status}</Text>
+            <SelectDropdown
+              data={[
+                { title: "Unread" },
+                { title: "Completed" },
+                { title: "Reading" }
+              ]}
+              onSelect={(selectedItem, index) => console.log(selectedItem, index)}
+              renderButton={(selectedItem, isOpened) => {
+                return (
+                  <View style={styles.dropdownButtonStyle}>
+                    {selectedItem && (
+                      <Icon name={selectedItem.icon}  />
+                    )}
+                    <Text style={styles.dropdownButtonTxtStyle}>
+                      {(selectedItem && selectedItem.title) || 'Select your mood'}
+                    </Text>
+                    <Icon name={isOpened ? 'chevron-up' : 'chevron-down'}  />
+                  </View>
+                );
+              }}
+              renderItem={(item, index, isSelected) => {
+                return (
+                  <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                    <Icon name={item.icon}  />
+                    <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
+                  </View>
+                );
+              }}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+            />
+          </View>
+
+
+
+
           <View>
             {bookDetails?.genres?.map(genre => <Text>{genre}</Text>)}
           </View>
@@ -111,6 +162,51 @@ const styles = StyleSheet.create({
   },
   button: {
     zIndex: 200
-  }
+  },
+  dropdownButtonStyle: {
+    width: 200,
+    height: 50,
+    backgroundColor: '#E9ECEF',
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownButtonArrowStyle: {
+    fontSize: 28,
+  },
+  dropdownButtonIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dropdownItemTxtStyle: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#151E26',
+  },
+  dropdownItemIconStyle: {
+    fontSize: 28,
+    marginRight: 8,
+  },
 })
 export default BookDetails
