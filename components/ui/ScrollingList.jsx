@@ -2,6 +2,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import BookTile from '../BookTile'
 
 const ScrollingList = ({ genre, list }) => {
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{!!genre && genre}</Text>
