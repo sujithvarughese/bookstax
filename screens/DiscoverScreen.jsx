@@ -20,13 +20,9 @@ const DiscoverScreen = () => {
   const { response: responseGenreList } = useAxios({ url: "/nyt/genres", method: "get" })
   const { setData: setGenreBestSellersData, response: responseGenreBestSellers } = useAxios({ url: `/nyt/genres/${genre}`, method: "get" })
 
+
   useEffect(() => {
     setBestSellersByGenre(responseGenreBestSellers)
-  }, [responseGenreBestSellers])
-
-
-  useEffect(() => {
-    setGenreBestSellersData(genre)
   }, [genre])
 
   useEffect(() => {
@@ -70,9 +66,11 @@ const DiscoverScreen = () => {
         />
       </View>
 
+      {bestSellersByGenre.length > 0 &&
       <View>
-        {bestSellersByGenre?.length > 0 && <ScrollingList genre={genre} list={bestSellersByGenre}/>}
+         <ScrollingList genre={genre} list={bestSellersByGenre}/>
       </View>
+      }
 
       <View>
         {bestSellers?.map(item => <ScrollingList key={item.label} genre={item.label} list={item.books}/>)}

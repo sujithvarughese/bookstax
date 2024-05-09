@@ -19,15 +19,12 @@ const useAxios = ({ url, method }) => {
   const [hasNextPage, setHasNextPage] = useState(false)
   const [pageNumber, setPageNumber] = useState(1)
 
-
   const fetchData = async () => {
     // reset any previous set values
     setIsLoading(true)
     setIsError(false)
     setError({})
     try {
-      console.log(url)
-      console.log(data)
       const response = await connect(url, { params: { data } })
       setResponse(response.data)
     } catch (error) {

@@ -16,6 +16,13 @@ const icons = {
 }
 
 const BookDetails = ({ showModal, setShowModal, book }) => {
+  // book only has property if in library
+  if (book._id) {
+    console.log(book)
+  }
+  // book -> nyt, bookhub, or db
+  // bookDetails -> bookhub
+  // myBookDetails -> db
 
   const { userId } = useAuthContext()
 
@@ -24,29 +31,26 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
   const [expandedSummary, setExpandedSummary] = useState(false)
   const [stars, setStars] = useState([])
 
-  const id = myBookDetails?.bookId || myBookDetails?.id
 
+  const id = book?.id || book?.bookId
   const { response } = useAxios({ url: `/bookhub/${id}`, method: "get" })
 
-  useEffect(() => {
-    setBookDetails(response)
-  }, [response])
 
-  const getMyBookDetails = async () => {
-
-  }
 
   const updateBookDetails = async () => {
     try {
-      const response = await connect.patch(`/library/${book._id}`, bookState)
+      const response = await connect.patch(`/library/${book._id}`, myBookDetails)
+      setMyBookDetails(response.data)
     } catch (error) {
       console.log(error)
     }
   }
 
   const addBookToLibrary = async () => {
+    setShowModal(false)
     try {
       const response = await connect.post("/library", { ...book, userId })
+      setMyBookDetails(response.data)
     } catch (error) {
       console.log(error)
     }
@@ -71,6 +75,10 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
     }
     updateBookDetails(myBookDetails)
   }, [myBookDetails])
+
+  useEffect(() => {
+    setBookDetails(response)
+  }, [response])
 
   return (
     <View style={styles.container}>
@@ -105,7 +113,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
             </View>
 
 
-
+            {myBookDetails?._id &&
             <View style={styles.col2}>
               <View style={styles.stars}>
                 {stars.map((star, index) =>
@@ -131,6 +139,8 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                     name="heart-outline" size={24} color="black" />
                 }
               </View>
+
+
 
               <View style={styles.status}>
                 <SelectDropdown
@@ -162,10 +172,8 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                 />
               </View>
             </View>
-
+            }
           </View>
-
-
 
           <View style={styles.summary}>
             <Text style={styles.descriptionText}>Description</Text>
@@ -201,11 +209,11 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
 
 
           {
-            myBookDetails?.status &&
+            myBookDetails?._id &&
             <View style={styles.removeButtonContainer}>
               <TouchableOpacity
                 style={styles.removeButton}
-                onPress={addBookToLibrary}>
+                onPress={() => console.log("Delete not available in demo!")}>
                 <Ionicons name="remove-circle" size={24} color="black" />
               </TouchableOpacity>
               <Text>Remove from Library</Text>
@@ -226,7 +234,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-
     marginTop: 22,
   },
   content: {
@@ -254,7 +261,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     gap: 4,
   },
-
   image: {
     alignSelf: "center",
     borderRadius: 4,

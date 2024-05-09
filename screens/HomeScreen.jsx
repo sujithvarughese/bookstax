@@ -11,10 +11,18 @@ const HomeScreen = () => {
 
   const [currentlyReading, setCurrentlyReading] = useState([])
   const [recommendedBooks, setRecommendedBooks] = useState([])
+  const [bestSellers, setBestSellers] = useState([])
+
   const { userId } = useAuthContext()
-  console.log(userId)
   const { response: resCurrentlyReading } = useAxios({ url:`/library/current/${userId}`, method: "get" })
   const { response: resRecommendedBooks, setData } = useAxios({ url:`/bookhub/recommended`, method: "get" })
+  const { response: resBestSellers, setBestSellersData } = useAxios({ url:`/nyt/bestsellers`, method: "get" })
+
+  useEffect(() => {
+    if (resBestSellers?.length > 0) {
+      setBestSellers(resBestSellers[0].books)
+    }
+  }, [resBestSellers])
 
   useEffect(() => {
     setRecommendedBooks(resRecommendedBooks)
@@ -52,11 +60,16 @@ const HomeScreen = () => {
         }
       </View>
 
+      {recommendedBooks?.length > 0 &&
       <View style={styles.content}>
-        {recommendedBooks?.length > 0 &&
-          <ScrollingList genre="Based on your reading" list={recommendedBooks} />
-        }
+        <ScrollingList genre="Based on your reading" list={recommendedBooks} />
       </View>
+      }
+      {bestSellers?.length > 0 &&
+      <View style={styles.content}>
+        <ScrollingList genre="New York Times Best Sellers" list={bestSellers} />
+      </View>
+      }
 
     </ScrollView>
   )
