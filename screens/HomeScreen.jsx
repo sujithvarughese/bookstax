@@ -1,28 +1,34 @@
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native'
-import logo from "../../assets/logo.jpeg"
-import { colors } from '../../utils/styles'
-import connect from '../../utils/connect'
+import logo from "../assets/logo.jpeg"
+import { colors } from '../utils/styles'
+import connect from '../utils/connect'
 import { useEffect, useState } from 'react'
-import BookTile from '../../components/BookTile'
-import ScrollingList from '../../components/ui/ScrollingList'
+import ScrollingList from '../components/ui/ScrollingList'
+import { useAuthContext } from '../context/auth-context'
+import useAxios from '../hooks/useAxios'
 
 const HomeScreen = () => {
 
   const [currentlyReading, setCurrentlyReading] = useState([])
+  const [recommendedBooks, setRecommendedBooks] = useState([])
+  const { userId } = useAuthContext()
 
-  const getCurrentlyReading = async () => {
-    try {
-      const response = await connect(`library/user/current/${userId}`)
-      const { data } = response.data
-      setCurrentlyReading(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const { response: resCurrentlyReading } = useAxios({ url:`/library/current/${userId}`, method: "get" })
+  const { response: resRecommendedBooks, setData } = useAxios({ url:`/bookhub/recommended`, method: "get" })
 
   useEffect(() => {
-    getCurrentlyReading()
-  }, [])
+    setRecommendedBooks(resRecommendedBooks)
+  }, [resRecommendedBooks])
+
+  useEffect(() => {
+    if (currentlyReading?.length > 0) {
+      setData(currentlyReading[0].bookId)
+    }
+  }, [currentlyReading])
+
+  useEffect(() => {
+    setCurrentlyReading(resCurrentlyReading)
+  }, [resCurrentlyReading])
 
   return (
     <ScrollView style={styles.container}>
@@ -39,9 +45,19 @@ const HomeScreen = () => {
       </View>
 
       <View style={styles.content}>
-        {currentlyReading?.length > 0 && <ScrollingList genre="Continue Reading" list={currentlyReading} />}
-
+        {currentlyReading?.length > 0 ?
+          <ScrollingList genre="Continue Reading" list={currentlyReading} />
+          :
+          <Text>No books in your current reading.</Text>
+        }
       </View>
+
+      <View style={styles.content}>
+        {recommendedBooks?.length > 0 &&
+          <ScrollingList genre="Based on your reading" list={recommendedBooks} />
+        }
+      </View>
+
     </ScrollView>
   )
 }

@@ -2,10 +2,17 @@ import { useState, useEffect } from 'react'
 import connect from '../utils/connect'
 import axios from 'axios'
 
-const useBooks = ({ method , url }) => {
+const endpoints = {
+  library: "/library",
+  current: "/current",
+  discover: "/discover/bestsellers",
+  search: "/discover/search"
+}
+
+const useAxios = ({ url, method }) => {
 
   const [data, setData] = useState("")
-  const [books, setBooks] = useState([])
+  const [response, setResponse] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const [error, setError] = useState({})
@@ -13,26 +20,26 @@ const useBooks = ({ method , url }) => {
   const [pageNumber, setPageNumber] = useState(1)
 
 
-  const getBooks = async () => {
+  const fetchData = async () => {
     // reset any previous set values
     setIsLoading(true)
     setIsError(false)
     setError({})
-
     try {
+      console.log(url)
+      console.log(data)
       const response = await connect(url, { params: { data } })
-      const { books } = response.data
-      setBooks(books)
+      setResponse(response.data)
     } catch (error) {
       throw new Error(error)
     }
   }
 
   useEffect(() => {
-    getBooks()
+    fetchData()
   }, [data])
 
-  return { setData, books }
+  return { setData, response }
 }
 
-export default useBooks
+export default useAxios

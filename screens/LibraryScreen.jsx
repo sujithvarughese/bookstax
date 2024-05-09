@@ -1,31 +1,19 @@
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
-import useLists from '../hooks/useLists'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useAuthContext } from '../context/auth-context'
 import { useEffect, useState } from 'react'
 import BookTile from '../components/BookTile'
-import useBooks from '../hooks/useBooks'
-import connect from '../utils/connect'
+import useAxios from '../hooks/useAxios'
 
 const LibraryScreen = () => {
 
   const { userId } = useAuthContext()
+  const { response } = useAxios({ url: `/library/${userId}`, method: "get" })
 
   const [library, setLibrary] = useState([])
 
-  const getLibrary = async () => {
-    try {
-      const response = await connect(`library/user/${userId}`)
-      const { data } = response.data
-      setLibrary(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   useEffect(() => {
-    getLibrary()
-  }, [])
-
+    setLibrary(response)
+  }, [response])
 
 
   return (

@@ -8,6 +8,7 @@ import Fontisto from '@expo/vector-icons/Fontisto';
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import useAxios from '../hooks/useAxios'
 
 const icons = {
   "Apple Books": <Fontisto name="apple" size={24} color="black" />,
@@ -16,26 +17,28 @@ const icons = {
 
 const BookDetails = ({ showModal, setShowModal, book }) => {
 
-  const [bookDetails, setBookDetails] = useState({})
-  const [expandedSummary, setExpandedSummary] = useState(false)
-  const [stars, setStars] = useState([])
-  const [bookState, setBookState] = useState(book)
-
   const { userId } = useAuthContext()
 
-  const getBookDetails = async () => {
-    try {
-      const response = await connect(`library/${book.bookId}`)
-      const { data } = response.data
-      setBookDetails(data)
-    } catch (error) {
-      console.log(error)
-    }
+  const [bookDetails, setBookDetails] = useState({}) // api
+  const [myBookDetails, setMyBookDetails] = useState(book) // db
+  const [expandedSummary, setExpandedSummary] = useState(false)
+  const [stars, setStars] = useState([])
+
+  const id = myBookDetails?.bookId || myBookDetails?.id
+
+  const { response } = useAxios({ url: `/bookhub/${id}`, method: "get" })
+
+  useEffect(() => {
+    setBookDetails(response)
+  }, [response])
+
+  const getMyBookDetails = async () => {
+
   }
 
   const updateBookDetails = async () => {
     try {
-      const response = await connect.patch(`library/${book._id}`, bookState)
+      const response = await connect.patch(`/library/${book._id}`, bookState)
     } catch (error) {
       console.log(error)
     }
@@ -43,7 +46,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
 
   const addBookToLibrary = async () => {
     try {
-      const response = await connect.post("library", { ...book, userId })
+      const response = await connect.post("/library", { ...book, userId })
     } catch (error) {
       console.log(error)
     }
@@ -51,20 +54,23 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
 
   useEffect(() => {
     const arr = []
-    for (let i = 0; i < bookState?.myRating; i++) {
+    for (let i = 0; i < myBookDetails?.myRating; i++) {
       arr.push(<Ionicons name="star" size={24} color="black"/>)
     }
-    for (let i = bookState?.myRating; i < 5; i++) {
+    for (let i = myBookDetails?.myRating; i < 5; i++) {
       arr.push(<Ionicons name="star-outline" size={24} color="black" />)
     }
     setStars(arr)
-    getBookDetails()
-  }, [bookState]);
+  }, [myBookDetails]);
 
-
+  let loadCount = 0
   useEffect(() => {
-    updateBookDetails(bookState)
-  }, [bookState])
+    if (loadCount === 0) {
+      loadCount++
+      return
+    }
+    updateBookDetails(myBookDetails)
+  }, [myBookDetails])
 
   return (
     <View style={styles.container}>
@@ -105,7 +111,9 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                 {stars.map((star, index) =>
                   <Icon
                     key={index}
-                    onPress={()=> {setBookState({ ...bookState, myRating: index + 1 })}}
+                    onPress={()=> {
+                      setMyBookDetails({ ...myBookDetails, myRating: index + 1 })
+                    }}
                   >
                     {star}
                   </Icon>
@@ -113,13 +121,13 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
               </View>
 
               <View style={styles.favorite}>
-                {bookState?.favorite ?
+                {myBookDetails?.favorite ?
                   <Ionicons
-                    onPress={() => setBookState({ ...bookState, favorite: false })}
+                    onPress={() => setMyBookDetails({ ...myBookDetails, favorite: false })}
                     name="heart-sharp" size={24} color="black" />
                   :
                   <Ionicons
-                    onPress={() => setBookState({ ...bookState, favorite: true })}
+                    onPress={() => setMyBookDetails({ ...myBookDetails, favorite: true })}
                     name="heart-outline" size={24} color="black" />
                 }
               </View>
@@ -131,7 +139,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                     { title: "Completed" },
                     { title: "Reading" }
                   ]}
-                  onSelect={(selectedItem, index) => setBookState({ ...bookState, status: selectedItem.title})}
+                  onSelect={(selectedItem, index) => setMyBookDetails({ ...myBookDetails, status: selectedItem.title})}
                   renderButton={(selectedItem, isOpened) => {
                     return (
                       <View style={styles.dropdownButtonStyle}>
@@ -139,7 +147,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                           <Icon name={selectedItem.icon}  />
                         )}
                         <Text style={styles.dropdownButtonTxtStyle}>
-                          {bookState.status || 'Status:'}
+                          {myBookDetails.status || 'Status:'}
                         </Text>
                         <Icon name={isOpened ? 'chevron-up' : 'chevron-down'}  />
                       </View>
@@ -197,7 +205,7 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
 
 
           {
-            book?.status &&
+            myBookDetails?.status &&
             <View style={styles.removeButtonContainer}>
               <TouchableOpacity
                 style={styles.removeButton}
