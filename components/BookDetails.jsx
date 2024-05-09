@@ -143,9 +143,6 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                   renderButton={(selectedItem, isOpened) => {
                     return (
                       <View style={styles.dropdownButtonStyle}>
-                        {selectedItem && (
-                          <Icon name={selectedItem.icon}  />
-                        )}
                         <Text style={styles.dropdownButtonTxtStyle}>
                           {myBookDetails.status || 'Status:'}
                         </Text>
@@ -156,7 +153,6 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                   renderItem={(item, index, isSelected) => {
                     return (
                       <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                        <Icon name={item.icon}  />
                         <Text style={styles.dropdownItemTxtStyle}>{item.title}</Text>
                       </View>
                     );

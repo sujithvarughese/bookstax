@@ -12,7 +12,7 @@ const HomeScreen = () => {
   const [currentlyReading, setCurrentlyReading] = useState([])
   const [recommendedBooks, setRecommendedBooks] = useState([])
   const { userId } = useAuthContext()
-
+  console.log(userId)
   const { response: resCurrentlyReading } = useAxios({ url:`/library/current/${userId}`, method: "get" })
   const { response: resRecommendedBooks, setData } = useAxios({ url:`/bookhub/recommended`, method: "get" })
 
@@ -28,7 +28,7 @@ const HomeScreen = () => {
 
   useEffect(() => {
     setCurrentlyReading(resCurrentlyReading)
-  }, [resCurrentlyReading])
+  }, [resCurrentlyReading, userId])
 
   return (
     <ScrollView style={styles.container}>

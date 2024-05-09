@@ -9,19 +9,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Navigation = () => {
 
-  const { isAuthenticated, authenticateUser } = useAuthContext()
+  const { isAuthenticated, authenticateUser, userId } = useAuthContext()
   const [isAuthenticatingUser, setIsAuthenticatingUser] = useState(true)
 
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem("token")
+      const userId = await AsyncStorage.getItem("userId")
       if (storedToken) {
         authenticateUser(storedToken, userId)
       }
       setIsAuthenticatingUser(false)
     }
     fetchToken()
-  }, [])
+  }, [userId])
 
   return (
     <NavigationContainer style={{ flex: 1 }}>

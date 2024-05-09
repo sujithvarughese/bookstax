@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={
     {
       token: authToken,
-      userId: user || null,
+      userId: user,
       isAuthenticated: !!authToken,
       authenticateUser,
       logoutUser,
