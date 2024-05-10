@@ -16,19 +16,21 @@ const useAxios = ({ url, method }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const [error, setError] = useState({})
-  const [hasNextPage, setHasNextPage] = useState(false)
-  const [pageNumber, setPageNumber] = useState(1)
 
   const fetchData = async () => {
     // reset any previous set values
     setIsLoading(true)
     setIsError(false)
     setError({})
+    console.log(data)
     try {
       const response = await connect(url, { params: { data } })
       setResponse(response.data)
     } catch (error) {
-      throw new Error(error)
+      setIsError(true)
+      setError(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -36,7 +38,7 @@ const useAxios = ({ url, method }) => {
     fetchData()
   }, [data])
 
-  return { setData, response }
+  return { data, setData, response, isLoading, isError, error }
 }
 
 export default useAxios

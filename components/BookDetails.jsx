@@ -9,6 +9,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import useAxios from '../hooks/useAxios'
+import { colors } from '../utils/styles'
 
 const icons = {
   "Apple Books": <Fontisto name="apple" size={24} color="black" />,
@@ -59,10 +60,10 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
   useEffect(() => {
     const arr = []
     for (let i = 0; i < myBookDetails?.myRating; i++) {
-      arr.push(<Ionicons name="star" size={24} color="black"/>)
+      arr.push(<Ionicons name="star" size={24} color="white"/>)
     }
     for (let i = myBookDetails?.myRating; i < 5; i++) {
-      arr.push(<Ionicons name="star-outline" size={24} color="black" />)
+      arr.push(<Ionicons name="star-outline" size={24} color="white" />)
     }
     setStars(arr)
   }, [myBookDetails]);
@@ -81,11 +82,15 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
   }, [response])
 
   return (
-    <View style={styles.container}>
-      <Modal visible={showModal}>
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        statusBarTranslucent={true}
+        style={styles.container}
+      >
 
         <ScrollView style={styles.content}>
-          <Fontisto style={styles.closeButton} onPress={() => setShowModal(false)} name="close-a" size={16} color="black" />
+          <Fontisto style={styles.closeButton} onPress={() => setShowModal(false)} name="close-a" size={16} color="white" />
 
           <Image resizeMode="cover" style={styles.image} source={{ uri: book.image }} />
           <Text style={styles.title}>{bookDetails?.title}</Text>
@@ -94,11 +99,11 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
           {
             !book?.status &&
             <View style={styles.addButtonContainer}>
-              <Text>Add to Library</Text>
+              <Text style={styles.text}>Add to Library</Text>
               <TouchableOpacity
                 style={styles.addButton}
                 onPress={addBookToLibrary}>
-                <Ionicons name="add-circle-sharp" size={28} color="black" />
+                <Ionicons name="add-circle-sharp" size={28} color="white" />
               </TouchableOpacity>
             </View>
           }
@@ -132,11 +137,11 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                 {myBookDetails?.favorite ?
                   <Ionicons
                     onPress={() => setMyBookDetails({ ...myBookDetails, favorite: false })}
-                    name="heart-sharp" size={24} color="black" />
+                    name="heart-sharp" size={24} color="white" />
                   :
                   <Ionicons
                     onPress={() => setMyBookDetails({ ...myBookDetails, favorite: true })}
-                    name="heart-outline" size={24} color="black" />
+                    name="heart-outline" size={24} color="white" />
                 }
               </View>
 
@@ -178,12 +183,12 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
           <View style={styles.summary}>
             <Text style={styles.descriptionText}>Description</Text>
             {expandedSummary ?
-              <Text>{bookDetails?.summary}</Text>
+              <Text style={styles.summary}>{bookDetails?.summary}</Text>
               :
-              <Text numberOfLines={6} >{bookDetails?.summary}</Text>
+              <Text style={styles.summary} numberOfLines={6} >{bookDetails?.summary}</Text>
             }
             <TouchableOpacity onPress={() => setExpandedSummary(!expandedSummary)}>
-              <Text>{expandedSummary ? "Less" : "More"}</Text>
+              <Text style={styles.summary}>{expandedSummary ? "Less" : "More"}</Text>
             </TouchableOpacity>
           </View>
 
@@ -206,24 +211,21 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
                 </TouchableOpacity>
               </View>
           }
-
-
           {
             myBookDetails?._id &&
             <View style={styles.removeButtonContainer}>
               <TouchableOpacity
                 style={styles.removeButton}
                 onPress={() => console.log("Delete not available in demo!")}>
-                <Ionicons name="remove-circle" size={24} color="black" />
+                <Ionicons name="remove-circle" size={24} color="white" />
               </TouchableOpacity>
-              <Text>Remove from Library</Text>
+              <Text style={styles.removeButton}>Remove from Library</Text>
             </View>
           }
-
         </ScrollView>
 
       </Modal>
-    </View>
+
 
 
 
@@ -231,16 +233,12 @@ const BookDetails = ({ showModal, setShowModal, book }) => {
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
+    backgroundColor: colors.colorGray
   },
   content: {
-    marginVertical: 60,
-    marginHorizontal: 20,
-    padding: 12,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: colors.darkGray,
+    paddingVertical: 60,
+    paddingHorizontal: 20,
     elevation: 8,
     shadowColor: "#000",
     shadowOffset: {
@@ -251,6 +249,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     borderRadius: 10,
     zIndex: 100,
+
   },
   closeButton: {
     alignSelf: "flex-end"
@@ -270,11 +269,13 @@ const styles = StyleSheet.create({
   title: {
     alignSelf: "center",
     fontSize: 18,
-    fontWeight: "800"
+    fontWeight: "800",
+    color: colors.text
   },
   author: {
     alignSelf: "center",
-    fontSize: 16
+    fontSize: 16,
+    color: colors.text
   },
   columns: {
     flexDirection: "row",
@@ -289,13 +290,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   rating: {
-
+    color: colors.text
   },
   pages: {
-
+    color: colors.text
   },
   year: {
-
+    color: colors.text
   },
   button: {
     zIndex: 200
@@ -309,21 +310,23 @@ const styles = StyleSheet.create({
   status: {
     alignItems: "center",
   },
-
   summary: {
     marginVertical: 12,
     alignSelf: "center",
     alignItems: "center",
-    gap: 6
+    gap: 6,
+    color: colors.text
   },
   descriptionText: {
     fontSize: 16,
-    fontWeight: "600"
+    fontWeight: "600",
+    color: colors.text
   },
   genres: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 4,
+    color: "white"
   },
   genre: {
     paddingVertical: 8,
@@ -347,7 +350,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   removeButton: {
-
+    color: colors.text
   },
   dropdownButtonStyle: {
     width: 120,

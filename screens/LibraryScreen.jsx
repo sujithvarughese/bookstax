@@ -3,6 +3,7 @@ import { useAuthContext } from '../context/auth-context'
 import { useEffect, useState } from 'react'
 import BookTile from '../components/BookTile'
 import useAxios from '../hooks/useAxios'
+import { colors } from '../utils/styles'
 
 const LibraryScreen = () => {
 
@@ -18,7 +19,6 @@ const LibraryScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text>Library</Text>
       <View style={styles.content}>
         {library?.length > 0 ?
           library.map(book => <BookTile key={book.title} book={book}/>)
@@ -26,7 +26,6 @@ const LibraryScreen = () => {
           <Text>No books in library</Text>
         }
       </View>
-
     </ScrollView
     >
   )
@@ -34,7 +33,7 @@ const LibraryScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-
+    backgroundColor: colors.background
   },
   content: {
     paddingTop: 12,
@@ -43,8 +42,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 6,
     alignItems: "center",
-
-
   }
 })
 

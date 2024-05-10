@@ -3,84 +3,78 @@ import { useEffect, useState } from 'react'
 import ScrollingList from '../components/ui/ScrollingList'
 import useAxios from '../hooks/useAxios'
 import SearchBar from '../components/SearchBar'
-import SearchResults from '../components/SearchResults'
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import BookList from '../components/BookList'
+import { colors } from '../utils/styles'
 
 const DiscoverScreen = () => {
 
-  const [bestSellers, setBestSellers] = useState([])
-  const [searchResults, setSearchResults] = useState([])
-  const [genreList, setGenreList] = useState([])
-  const [genre, setGenre] = useState("")
-  const [bestSellersByGenre, setBestSellersByGenre] = useState([])
+  const { response: bestSellers } = useAxios({ url: "/nyt/bestsellers", method: "get" })
+  const { response: genreList } = useAxios({ url: "/nyt/genres", method: "get" })
 
-  const { response: responseBestSellers } = useAxios({ url: "/nyt/bestsellers", method: "get" })
-  const { setData: setSearchData, response: responseSearch } = useAxios({ url: "/bookhub/search", method: "get" })
-  const { response: responseGenreList } = useAxios({ url: "/nyt/genres", method: "get" })
-  const { setData: setGenreBestSellersData, response: responseGenreBestSellers } = useAxios({ url: `/nyt/genres/${genre}`, method: "get" })
+  const { setData: setSearch, response: searchResults } = useAxios({ url: "/bookhub/search", method: "get" })
+  const { data: genre, setData: setGenre, response: genreBestSellers } = useAxios({ url: `/nyt/genres/${genre}`, method: "get" })
 
-
-  useEffect(() => {
-    setBestSellersByGenre(responseGenreBestSellers)
-  }, [genre])
-
-  useEffect(() => {
-    setBestSellers(responseBestSellers)
-    setGenreList(responseGenreList)
-  }, [responseBestSellers, responseGenreList])
-
-  useEffect(() => {
-    setSearchResults(responseSearch)
-  }, [responseSearch])
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <SearchBar onSubmit={setSearch} placeholder="Search" buttonText="Search"/>
+        {searchResults?.length > 0 && <BookList title="Search Results" list={searchResults}/>}
 
-      <SearchBar onSubmit={setSearchData} placeholder="Search" buttonText="Search"/>
-      {searchResults?.length > 0 && <SearchResults searchResults={searchResults}/>}
+        <Text>New York Times Best Sellers</Text>
 
-      <Text>New York Times Best Sellers</Text>
+        <View style={styles.dropdown}>
+          <SelectDropdown
+            data={genreList}
+            onSelect={(selectedItem, index) => setGenre(selectedItem)}
+            renderButton={(selectedItem, isOpened) => {
+              return (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {genre || 'Select Genre:'}
+                  </Text>
+                  <Icon name={isOpened ? 'chevron-up' : 'chevron-down'}  />
+                </View>
+              );
+            }}
+            renderItem={(item, index, isSelected) => {
+              return (
+                <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
+                  <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
+                </View>
+              );
+            }}
+          />
+        </View>
 
-      <View style={styles.dropdown}>
-        <SelectDropdown
-          data={genreList}
-          onSelect={(selectedItem, index) => setGenre(selectedItem)}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {genre || 'Select Genre:'}
-                </Text>
-                <Icon name={isOpened ? 'chevron-up' : 'chevron-down'}  />
-              </View>
-            );
-          }}
-          renderItem={(item, index, isSelected) => {
-            return (
-              <View style={{...styles.dropdownItemStyle, ...(isSelected && {backgroundColor: '#D2D9DF'})}}>
-                <Text style={styles.dropdownItemTxtStyle}>{item}</Text>
-              </View>
-            );
-          }}
-        />
+        {genreBestSellers?.length > 0 &&
+          <View>
+            <ScrollingList genre={genre} list={genreBestSellers}/>
+          </View>
+        }
+
+        {bestSellers?.length > 0 &&
+          <View>
+            {bestSellers?.map(item => <ScrollingList key={item.label} genre={item.label} list={item["books"]}/>)}
+          </View>
+        }
       </View>
-
-      {bestSellersByGenre.length > 0 &&
-      <View>
-         <ScrollingList genre={genre} list={bestSellersByGenre}/>
-      </View>
-      }
-
-      <View>
-        {bestSellers?.map(item => <ScrollingList key={item.label} genre={item.label} list={item.books}/>)}
-      </View>
-
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.background
+  },
+  content: {
+    paddingTop: 12,
+    paddingHorizontal: 6,
+    gap: 6,
+    alignItems: "center",
+  },
   dropdown: {
     alignItems: "center",
   },

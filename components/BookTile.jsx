@@ -2,6 +2,7 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import BookDetails from './BookDetails'
 import { useState } from 'react'
 import connect from '../utils/connect'
+import { colors } from '../utils/styles'
 const BookTile = ({ book }) => {
 
   const [showModal, setShowModal] = useState(false)
@@ -23,8 +24,7 @@ const BookTile = ({ book }) => {
 }
 const styles = StyleSheet.create({
   container: {
-
-    backgroundColor: "white",
+    backgroundColor: colors.background,
     elevation: 8,
     shadowColor: "#000",
     shadowOffset: {

@@ -7,7 +7,9 @@ import ScrollingList from '../components/ui/ScrollingList'
 import { useAuthContext } from '../context/auth-context'
 import useAxios from '../hooks/useAxios'
 
+
 const HomeScreen = () => {
+
 
   const [currentlyReading, setCurrentlyReading] = useState([])
   const [recommendedBooks, setRecommendedBooks] = useState([])
@@ -40,7 +42,6 @@ const HomeScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text>Home</Text>
       <View style={styles.header}>
         <View>
           <Text style={styles.welcomeText}>Welcome!</Text>
@@ -77,6 +78,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 8,
+    backgroundColor: colors.background
   },
   content: {
 
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 16,
     fontWeight: "700",
-    color: colors.colorGray
+    color: colors.text
   },
   logo: {
     flexDirection: "row",

@@ -11,7 +11,7 @@ const ScrollingList = ({ genre, list }) => {
           style={styles.list}
           horizontal={true}
           initialNumToRender={4}
-          keyExtractor={item => item.title}
+          keyExtractor={(item, index) => index}
           data={list}
           renderItem={({item}) =>
             <View style={styles.item}>
@@ -31,7 +31,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: "700",
-    textTransform: "capitalize"
+    textTransform: "capitalize",
+    color: "white",
+
   },
   item: {
     marginRight: 6

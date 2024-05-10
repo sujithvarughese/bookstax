@@ -15,19 +15,26 @@ const AuthenticatedNavigator = () => {
   if (!userId) return
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{
+      tabBarStyle: {
+        backgroundColor: "black"
+      },
+      tabBarActiveTintColor: "white",
+      tabBarInactiveTintColor: "gray",
+      headerStyle: {
+        backgroundColor: "black"
+      }
+    }}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
           tabBarLabel: "Home",
           lazy: true,
-          tabBarIcon: () => <FontAwesome5 name="home" size={24} color="black" />,
-          headerRight: ({ tintColor }) => <IconButton icon="exit" color={tintColor} size={24} onPress={logoutUser}/>,
+          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24}  color={color}/>,
+          tabBarActiveTintColor: "white",
+          headerRight: ({ tintColor }) => <IconButton icon="exit" color="white" size={24} onPress={logoutUser}/>,
           headerTitle: "",
-          headerStyle: {
-            backgroundColor: colors.color
-          }
         }}
       />
       <Tab.Screen
@@ -35,12 +42,9 @@ const AuthenticatedNavigator = () => {
         component={LibraryScreen}
         options={{
           tabBarLabel: "Library",
-          tabBarIcon: () => <FontAwesome5 name="home" size={24} color="black" />,
-          headerRight: ({ tintColor }) => <IconButton icon="exit" color={tintColor} size={24} onPress={logoutUser}/>,
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: colors.color
-          }
+          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color}/>,
+          headerTitle: "Library",
+          headerTintColor: "white"
         }}
       />
       <Tab.Screen
@@ -48,12 +52,9 @@ const AuthenticatedNavigator = () => {
         component={DiscoverScreen}
         options={{
           tabBarLabel: "Discover",
-          tabBarIcon: () => <FontAwesome5 name="home" size={24} color="black" />,
-          headerRight: ({ tintColor }) => <IconButton icon="exit" color={tintColor} size={24} onPress={logoutUser}/>,
-          headerTitle: "",
-          headerStyle: {
-            backgroundColor: colors.color
-          }
+          tabBarIcon: ({ color }) => <FontAwesome5 name="home" size={24} color={color} />,
+          headerTitle: "Discover",
+          headerTintColor: "white"
         }}
       />
     </Tab.Navigator>
