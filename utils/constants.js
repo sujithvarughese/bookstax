@@ -1,7 +1,7 @@
 
 const prod = {
   url: {
-    API_URL: "https://exuberant-pear-stockings.cyclic.app/api/v1"
+    API_URL: "https://bookstax-api-c040fb8f60e5.herokuapp.com/api/v1"
   }
 };
 
