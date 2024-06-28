@@ -1,6 +1,7 @@
 import { Alert, Image, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
+import welcomeImage from "../../assets/welcomeCover.png"
 import logo from "../../assets/logo.jpeg"
 import { colors } from '../../utils/styles'
 import connect from '../../utils/connect'
@@ -31,7 +32,7 @@ const WelcomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground style={styles.background} source={logo}>
+      <ImageBackground style={styles.background} source={welcomeImage}>
         <View style={styles.backgroundOverlay}>
           <View style={styles.textGroup}>
             <Text style={styles.welcome}>Welcome</Text>
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
+    resizeMode: 'cover'
   },
   backgroundOverlay: {
     flex: 1,
